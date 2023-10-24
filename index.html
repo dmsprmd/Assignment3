@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="covid.css" />
+    <title>COVID-19 Tracker</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Covid-19 Tracker</h1>
+      <input type="text" placeholder="Cari Negara" class="inputElement" />
+      <button class="btn">Get Data</button>
+      <br />
+      <div id="container-atas">
+        <div class="data-card activeCasesDiv">
+          <img src="/img/active.png" alt="logo" width="50px" height="50px" />
+          Active Cases
+          <p class="activeCases">Null</p>
+        </div>
+        <div class="data-card newCasesDiv">
+          <img src="/img/plus.png" alt="logo" width="50px" height="50px" />
+          New Cases
+          <p class="newCases">Null</p>
+        </div>
+        <div class="data-card recoveredCasesDiv">
+          <img src="/img/verified.png" alt="logo" width="50px" height="50px" />
+          Recovered Cases
+          <p class="recoveredCases">Null</p>
+        </div>
+      </div>
+      <br />
+      <div id="container-bawah">
+        <div class="data-card totalCasesDiv">
+          <img src="/img/all.png" alt="logo" width="50px" height="50px" />
+          Total Cases
+          <p class="totalCases">Null</p>
+        </div>
+        <div class="data-card totalDeathsCasesDiv">
+          <img src="/img/grave.png" alt="logo" width="50px" height="50px" />
+          Total Deaths Cases
+          <p class="totalDeathsCases">Null</p>
+        </div>
+        <div class="data-card totalTestsCasesDiv">
+          <img src="img/test.png" alt="logo" width="50px" height="50px" />
+          Total Test Cases
+          <p class="totalTestsCases">Null</p>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const btn = document.querySelector(".btn");
+    const inputElement = document.querySelector(".inputElement");
+
+    btn.addEventListener("click", getData);
+
+    async function getData() {
+      let country = inputElement.value;
+      const url = `https://covid-193.p.rapidapi.com/statistics?country=${country}`;
+      const options = {
+        method: "GET",
+        headers: {
+          "X-RapidAPI-Key":
+            "9e6cc5dc03msh4cb81192449af88p163c8cjsn0f674ba7c90d",
+          "X-RapidAPI-Host": "covid-193.p.rapidapi.com",
+        },
+      };
+
+      try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        // Menampilkan data pada elemen HTML di setiap kotak
+        const stats = data.response[0];
+        document.querySelector(".activeCases").innerHTML = stats.cases.active;
+        document.querySelector(".newCases").innerHTML = stats.cases.new;
+        document.querySelector(".recoveredCases").innerHTML =
+          stats.cases.recovered;
+        document.querySelector(".totalCases").innerHTML = stats.cases.total;
+        document.querySelector(".totalDeathsCases").innerHTML =
+          stats.deaths.total;
+        document.querySelector(".totalTestsCases").innerHTML =
+          stats.tests.total;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getData();
+  </script>
+</html>
